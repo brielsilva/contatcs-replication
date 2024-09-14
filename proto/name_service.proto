@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+service NameService {
+  rpc RegisterService(ServiceInfo) returns (RegisterResponse);
+  rpc GetServices(Empty) returns (ServiceList);
+}
+
+message ServiceInfo {
+  string name = 1;
+  string url = 2;
+}
+
+message RegisterResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+message ServiceList {
+  repeated ServiceInfo services = 1;
+}
+
+message Empty {}
