@@ -96,7 +96,7 @@ function connectToAgendaService(url) {
   mainWindow.webContents.send('agenda-service-connected',url);
 
   
-  startHeartbeat();
+  // startHeartbeat();
 
   exchangeUpdates();
 }
@@ -117,14 +117,16 @@ function exchangeUpdates() {
   
     updateStream.on('error', (error) => {
       console.error('Erro no stream bidirecional:', error);
-      
-      setTimeout(exchangeUpdates, 5000);
+      // setTimeout(exchangeUpdates, 5000);
+      dialog.showErrorBox("Erro","Stream encerrado pelo servidor, tentanto reconectar");
+      setTimeout(connectToNameService, 5000);
     });
   
     updateStream.on('end', () => {
       console.log('Stream bidirecional encerrado pelo servidor');
-      
-      setTimeout(exchangeUpdates, 5000);
+      // connectToNameService();
+      dialog.showErrorBox("Erro","Stream encerrado pelo servidor, tentanto reconectar");
+      setTimeout(connectToNameService, 5000);
     });
   }
 
