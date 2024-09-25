@@ -5,7 +5,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   updateContact: (contact) => ipcRenderer.invoke('update-contact', contact),
   getAllContacts: () => ipcRenderer.invoke('get-all-contacts'),
   removeContact: (contactRequest) => ipcRenderer.invoke('remove-contact', contactRequest),
-  onAgendaServiceConnected: (callback) => ipcRenderer.on('agenda-service-connected', callback),
+  onAgendaServiceConnected: (callback) => ipcRenderer.on('agenda-service-connected', (event,url) => callback(url)),
   onAgendaServiceDown: (callback) => ipcRenderer.on('agenda-service-down', callback),
   onContactChanged: (callback) => ipcRenderer.on('contact-changed', (event, changeRequest) => callback(changeRequest)),
 });

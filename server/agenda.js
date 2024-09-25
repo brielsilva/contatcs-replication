@@ -178,6 +178,7 @@ function connectToOtherAgendas(agendaPort) {
     if (err) {
       console.error('Erro ao obter serviços:', err);
     } else {
+      console.log(response.services)
       const services = response.services;
       services.forEach(service => {
         if (service.name === 'AgendaService' && service.url !== `localhost:${agendaPort}`) {
@@ -230,6 +231,7 @@ function connectToOtherAgendas(agendaPort) {
               if (index !== -1) {
                 connectedStreams.splice(index, 1);
               }
+              call.end()
             });
 
             call.on('end', () => {
@@ -239,6 +241,7 @@ function connectToOtherAgendas(agendaPort) {
               if (index !== -1) {
                 connectedStreams.splice(index, 1);
               }
+              call.end()
             });
 
             console.log(`Agenda na porta ${agendaPort}: Estabelecido stream bidirecional com ${service.url}`);

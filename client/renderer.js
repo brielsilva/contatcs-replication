@@ -145,8 +145,8 @@ window.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    window.electronAPI.onAgendaServiceConnected(() => {
-        statusDiv.textContent = 'Conectado ao Serviço de Agenda';
+    window.electronAPI.onAgendaServiceConnected((url) => {
+        statusDiv.textContent = `Conectado a Agenda: ${url}`;
         window.electronAPI.getAllContacts().then((initialContacts) => {
           refreshContactsWithData(initialContacts);
         });

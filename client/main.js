@@ -85,11 +85,15 @@ function connectToAgendaService(url) {
   });
   const agendaServiceProto = grpc.loadPackageDefinition(agendaServicePackageDef);
 
-  
-  agendaClient = new agendaServiceProto.AgendaService(url, grpc.credentials.createInsecure());
+  if (updateStream) {
+    console.log('Encerrando o stream anterior antes de se conectar a uma nova agenda.');
+    updateStream.removeAllListeners(); 
+    updateStream.end(); 
+  }
 
+  agendaClient = new agendaServiceProto.AgendaService(url, grpc.credentials.createInsecure());
   
-  mainWindow.webContents.send('agenda-service-connected');
+  mainWindow.webContents.send('agenda-service-connected',url);
 
   
   startHeartbeat();
@@ -99,27 +103,30 @@ function connectToAgendaService(url) {
 
 function exchangeUpdates() {
   if (updateStream) {
+    console.log('Encerrando o stream anterior antes de se conectar a uma nova agenda.');
+    updateStream.removeAllListeners(); 
     updateStream.end();
-  }
-
-  updateStream = agendaClient.ExchangeUpdates();
-
+  } 
+  if(updateStream !== null)  {
+    updateStream = agendaClient.ExchangeUpdates();
   
-  updateStream.on('data', (changeRequest) => {
-    mainWindow.webContents.send('contact-changed', changeRequest);
-  });
-
-  updateStream.on('error', (error) => {
-    console.error('Erro no stream bidirecional:', error);
     
-    setTimeout(exchangeUpdates, 5000);
-  });
-
-  updateStream.on('end', () => {
-    console.log('Stream bidirecional encerrado pelo servidor');
-    
-    setTimeout(exchangeUpdates, 5000);
-  });
+    updateStream.on('data', (changeRequest) => {
+      mainWindow.webContents.send('contact-changed', changeRequest);
+    });
+  
+    updateStream.on('error', (error) => {
+      console.error('Erro no stream bidirecional:', error);
+      
+      setTimeout(exchangeUpdates, 5000);
+    });
+  
+    updateStream.on('end', () => {
+      console.log('Stream bidirecional encerrado pelo servidor');
+      
+      setTimeout(exchangeUpdates, 5000);
+    });
+  }
 
   
   
